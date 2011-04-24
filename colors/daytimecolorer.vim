@@ -1,7 +1,7 @@
 " File:         DayTimeColorer.vim
 " Author:       RedRampage <redrampage@gmail.com>
-" Last Updated: April 24, 2011
-" Version:      0.1
+" Last Updated: April 25, 2011
+" Version:      0.1.1
 " Description:  Change color scheme according to position of the sun.
 " License:      GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
 " Requirements: gVIM compiled with +float option 
@@ -47,6 +47,11 @@
 " let g:dtcTimeOffset = -3 " GMT-3
 "
 " You can set g:dtcAutoRefresh = 1 to enable automatic refresh of color scheme
+"===============================================================================
+" v 0.1 Initial release
+"===============================================================================
+" v 0.1.1
+"   Fixed screen flicker on timer event caused by unnecessary scheme reload.
 "===============================================================================
 
 " Internal constants
@@ -287,33 +292,48 @@ function! g:dtcSetColor()
 
     if s:currentTime < s:dawnTime
         " It's night
-        silent execute "colo " . g:dtcNightScheme 
-        redraw
-        " echo "Yawn... It's " . strftime("%H:%M") . " and there is " .
-        "     \ string(s:dawnTime-s:currentTime) . " minutes till dawn."
+        if !exists("s:currentColo") || s:currentColo != g:dtcNightScheme
+            let s:currentColo = g:dtcNightScheme
+            silent execute "colo " . g:dtcNightScheme 
+            redraw
+            echo "Yawn... It's " . strftime("%H:%M") . " and there is " .
+                \ string(s:dawnTime-s:currentTime) . " minutes till dawn."
+        endif
     elseif s:currentTime > s:dawnTime && s:currentTime < s:sunriseTime
         " It's dawn  
-        silent execute "colo " . g:dtcDawnScheme
-        redraw
-        " echo "Good morning! It's " . strftime("%H:%M") . " and there is " .
-        "     \ string(s:sunriseTime-s:currentTime) . " minutes till sunrise."
+        if !exists("s:currentColo") || s:currentColo != g:dtcDawnScheme
+            let s:currentColo = g:dtcDawnScheme
+            silent execute "colo " . g:dtcDawnScheme
+            redraw
+            echo "Good morning! It's " . strftime("%H:%M") . " and there is " .
+                \ string(s:sunriseTime-s:currentTime) . " minutes till sunrise."
+        endif
     elseif s:currentTime > s:sunriseTime && s:currentTime < s:sunsetTime
         " It's day
-        silent execute "colo " . g:dtcDayScheme
-        redraw
-        " echo "G'day! It's " . strftime("%H:%M") . " and there is " .
-        "     \ string(s:sunsetTime-s:currentTime) . " minutes till sunset."
+        if !exists("s:currentColo") || s:currentColo != g:dtcDayScheme
+            let s:currentColo = g:dtcDayScheme
+            silent execute "colo " . g:dtcDayScheme
+            redraw
+            echo "G'day! It's " . strftime("%H:%M") . " and there is " .
+                \ string(s:sunsetTime-s:currentTime) . " minutes till sunset."
+        endif
     elseif s:currentTime > s:sunsetTime && s:currentTime < s:duskTime
         " It's dusk
-        silent execute "colo " . g:dtcDuskScheme
-        redraw
-        " echo "Evening. It's " . strftime("%H:%M") . " and there still " .
-        "     \ string(s:duskTime-s:currentTime) . " minutes till dark."
+        if !exists("s:currentColo") || s:currentColo != g:dtcDuskScheme
+            let s:currentColo = g:dtcDuskScheme
+            silent execute "colo " . g:dtcDuskScheme
+            redraw
+            echo "Evening. It's " . strftime("%H:%M") . " and there still " .
+                \ string(s:duskTime-s:currentTime) . " minutes till dark."
+        endif
     else
         " It's night again
-        silent execute "colo " . g:dtcNightScheme
-        redraw
-        " echo "Zzzz... It's " . strftime("%H:%M") . " see you tomorrow..."
+        if !exists("s:currentColo") || s:currentColo != g:dtcNightScheme
+            let s:currentColo = g:dtcNightScheme
+            silent execute "colo " . g:dtcNightScheme
+            redraw
+            echo "Zzzz... It's " . strftime("%H:%M") . " see you tomorrow..."
+        endif
     endif
 endfunction
 
