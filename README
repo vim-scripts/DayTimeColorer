@@ -1,0 +1,11 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3562
+
+This plugin calculates dawn, dusk, sunrise and sunset times and sets one of the four user defined color schemes according to sun position.
+Your vim must be compiled with +float feature.
+Plugin uses algorithm from "Almanac for Computers, 1990"
+Which description has been found at:
+http://williams.best.vwh.net/sunrise_sunset_algorithm.htm
+Idea of plugin is taken from:
+http://allaboutvim.blogspot.com/2011/01/blog-post.html
+...and turned into overkill =)
+Automatic refresh code is taken from: vimscript #2658
